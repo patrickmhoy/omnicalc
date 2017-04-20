@@ -109,17 +109,21 @@ end
 
 #variance
 
+    mean_diffs = []
+
     @numbers.each do |num|
-      diff = @mean - num
-      mean_diffs.push(diff)
+      diff_square = (@mean - num)*(@mean - num)
+      mean_diffs.push(diff_square)
     end
 
-    @variance = ((mean_diffs.sum)*(mean_diffs.sum))/(@numbers.count-1)
+    @variance = (mean_diffs.sum)/(@numbers.count-1)
 
 
 
 
-    @standard_deviation = "Replace this string with your answer."
+
+
+    @standard_deviation = @variance**(1/2)
 
     @mode = "Replace this string with your answer."
 
