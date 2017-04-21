@@ -10,15 +10,15 @@ class CalculationsController < ApplicationController
     # The special word the user input is in the string @special_word.
     # ================================================================================
 
-
+    #\n \t \r and spaces
 
     @word_count = @text.split.count
 
-    @character_count_with_spaces = @text.length
+    @character_count_with_spaces = @text.strip.length
 
-    @character_count_without_spaces = @text.gsub(" ","").length
+    @character_count_without_spaces = @text.gsub("\n","").gsub(" ","").gsub("\t","").gsub("\r","").length
 
-    @occurrences = @text.split.count(@special_word)
+    @occurrences = @text.downcase.gsub(/[^a-z0-9\s]/i, "").split.count(@special_word)
 
     # ================================================================================
     # Your code goes above.
@@ -95,11 +95,13 @@ class CalculationsController < ApplicationController
     @range = (@numbers.sort.last) - (@numbers.sort.first)
 
     if @numbers.count.odd?
-        middle = (@numbers.count/2)
+        middle = (@numbers.count-1)/2
       @median = @numbers.sort[middle]
 
     else
-      @median = (@numbers.sum)/(@numbers.count)
+      first=(@numbers.count/2)-1
+      second=(@numbers.count/2)
+      @median = (@numbers.sort[first]+@numbers.sort[second])/2
 
 end
 
@@ -109,23 +111,22 @@ end
 
 #variance
 
-    mean_diffs = []
+    squares = []
 
     @numbers.each do |num|
-      diff_square = (@mean - num)*(@mean - num)
-      mean_diffs.push(diff_square)
+
+      num_squared = num**2
+
+      squares.push(num_squared)
+
     end
 
-    @variance = (mean_diffs.sum)/(@numbers.count-1)
+    @variance = (squares.sum/@numbers.count)-(@mean**2)
 
+    @standard_deviation = @variance**(0.5)
 
-
-
-
-
-    @standard_deviation = @variance**(1/2)
-
-    @mode = "Replace this string with your answer."
+    freq = @numbers.inject(Hash.new(0)) { |h,v| h[v] += 1; h}
+    @mode = @numbers.max_by { |v| freq[v]}
 
     # ================================================================================
     # Your code goes above.
